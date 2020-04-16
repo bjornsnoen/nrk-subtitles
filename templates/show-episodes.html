@@ -2,9 +2,9 @@
 {% block content %}
   {{ nav.navbar() }}
   <h2>{{ title }}</h2>
-  {% for season in seasons %}
+  {% for season in seasons if season['episodes'] %}
   <div>
-    {{ season['title'] }}
+    <h3 class="season-title">{{ season['title'] }}</h3>
     <div>
       <ul class="episode-list">
         {% for episode in season['episodes']  %}
