@@ -44,11 +44,12 @@ def root(show):
             value['episodes'].append({
                 'title': titles['title'],
                 'subtitle': titles['subtitle'],
-                'link': link
+                'link': link,
+                'image': episode['image'][0]
             })
 
         seasons.append(value)
-    return render_template('show-episodes.html', seasons=seasons)
+    return render_template('show-episodes.html', seasons=seasons, title=nrk.config['series']['titles']['title'])
 
 @app.route('/show/<string:show>/season/<int:season>/episode/<int:episode>/')
 def subs(show, season, episode):
