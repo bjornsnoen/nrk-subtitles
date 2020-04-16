@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+  {{ nav.navbar() }}
+  {% for season in seasons %}
+  <div>
+    {{ season['title'] }}
+    <div>
+      <ul class="episode-list">
+        {% for episode in season['episodes']  %}
+        <li class="episode">
+          <a href="{{ episode['link'] }}">
+            <span class="title">{{ episode['title'] }}</span>
+          </a><br />
+          <span class='subtitle'>{{ episode['subtitle'] }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+.show-link{
+    display: block;
+}
+
+.episode-list > .episode{
+    padding: 5px;
+    max-width: 70rem;
+}
+
+a:visited {
+    color: blue;
+}
+
+.navlink {
+    padding-right: 2em;
+}

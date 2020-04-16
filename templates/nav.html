@@ -1,0 +1,14 @@
+{% macro navbar(up_link='', left_link='', right_link='') -%}
+    <div class="navigation">
+        <a href="{{ url_for('test') }}" class="navlink home">🏠</a>
+        {% if left_link %}
+            <a href="{{ left_link }}" class="navlink directional">↤</a>
+        {% endif %}
+        {% if up_link %}
+            <a href="{{ up_link }}" class="navlink directional">↥</a>
+        {% endif %}
+        {% if right_link %}
+            <a href="{{ right_link }}" class="navlink directional">↦</a>
+        {% endif %}
+    </div>
+{%- endmacro %}
