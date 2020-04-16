@@ -50,8 +50,10 @@ class Show:
             # God damn it NRK, just because you run one every year doesn't mean you can just not give me the season number
             for season in self.config['series']['seasons']:
                 if season['name'].isnumeric() and int(season['name']) == number:
-                    instalments = list(filter(lambda instalment: instalment['season']['name'] == season['name'], self.config['standard']['instalments']['instalments']))
-                    return instalments
+                    instalments = self.config['series']['instalments'] if self.config['series']['instalments'] else self.config['standard']['instalments']['instalments']
+                    instalments_in_season = list(filter(lambda instalment: instalment['season']['name'] == season['name'], instalments))
+                    return instalments_in_season
+
 
     def get_episode(self, season, episode):
         try:
