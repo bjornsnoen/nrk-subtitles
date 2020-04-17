@@ -41,27 +41,42 @@ class Show:
 
     def get_seasons(self):
         return self.config['series']['seasons']
+    
+    def get_season(self, season_number: int):
+        try: 
+            season = reduce(lambda x,y: x if x['seasonNumber'] == season_number else y, self.get_seasons())
+        except KeyError:
+            season = reduce(lambda x,y: x if int(x['name']) == season_number else y, self.get_seasons())
+        return season
 
     def get_episodes_in_season(self, number):
         try:
-            season = self.config['series']['seasons'][number]
-            return season['episodes']
-        except IndexError:
+            season = self.get_season(number)
+            episodes = season['episodes']
+        except KeyError:
             # God damn it NRK, just because you run one every year doesn't mean you can just not give me the season number
-            for season in self.config['series']['seasons']:
+            for season in self.get_seasons():
                 if season['name'].isnumeric() and int(season['name']) == number:
                     instalments = self.config['series']['instalments'] if self.config['series']['instalments'] else self.config['standard']['instalments']['instalments']
                     instalments_in_season = list(filter(lambda instalment: instalment['season']['name'] == season['name'], instalments))
-                    return instalments_in_season
+                    episodes = instalments_in_season
 
+        if episodes:
+            return list(filter(lambda episode: episode['availability']['status'] == 'available', episodes))
+        else:
+            return []    
 
-    def get_episode(self, season, episode):
+    def get_episode(self, season_number, episode):
         try:
-            season = self.get_seasons()[season]
+            season = self.get_season(season_number)
             return season['episodes'][episode]
         except:
-            episodes = self.get_episodes_in_season(season)
-            episode = reduce((lambda episode_x, episode_y: episode_x if dateparser.parse(episode_x['titles']['title']).timestamp() == episode else episode_y), episodes)
+            episodes = self.get_episodes_in_season(season_number)
+            try:
+                episode = reduce((lambda episode_x, episode_y: episode_x if dateparser.parse(episode_x['titles']['title']).timestamp() == episode else episode_y), episodes)
+            except:
+                # Last ditch?
+                episode = episodes[episode]
             return episode
 
     def get_subs_for_episode(self, season, episode):
@@ -75,6 +90,8 @@ class Show:
         if r.status_code != 200:
             real_link = link.format(prfid=id, prefix=prefix, dir=dir, LANG="NOR")
             r = requests.get(real_link)
+        if r.status_code != 200:
+            raise requests.exceptions.InvalidURL
         return self.parse_subs(r.text)
 
     def parse_subs(self, subs):

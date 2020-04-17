@@ -23,20 +23,23 @@ def root(show):
             value['title'] = 'Ukjent'
 
         if 'seasonNumber' in season:
-            value['season_number'] = season['seasonNumber'] - 1
-            seasonNumber = season['seasonNumber'] - 1
+            value['season_number'] = season['seasonNumber']
+            seasonNumber = season['seasonNumber']
         elif season['name'].isnumeric():
             value['season_number'] = int(season['name'])
             seasonNumber = int(season['name'])
 
         episodes = nrk.get_episodes_in_season(seasonNumber)
 
-        for episode in episodes:
+        for idx, episode in enumerate(episodes, start=0):
             if 'episodeNumber' in episode:
                 number = episode['episodeNumber'] - 1
             else:
                 date = dateparser.parse(episode['titles']['title'])
-                number = date.timestamp()
+                if date:
+                    number = date.timestamp()
+                else:
+                    number = idx
                 
             titles = nrk.get_episode_titles(seasonNumber, number)
             link = url_for('subs',show=show, season=seasonNumber, episode=number)
@@ -54,13 +57,16 @@ def root(show):
 @app.route('/show/<string:show>/season/<int:season>/episode/<int:episode>/')
 def subs(show, season, episode):
     nrk = Show(show)
-    subs = nrk.get_subs_for_episode(season, episode)
+    try:
+        subs = nrk.get_subs_for_episode(season, episode)
+    except:
+        return render_template('404.html')
     episodes_in_season = nrk.get_episodes_in_season(season)
     if episodes_in_season.__len__() - 1 > episode:
         next = {"season": season, "episode": episode + 1}
     else:
         seasons = nrk.get_seasons()
-        if seasons.__len__() - 1 > season:
+        if seasons.__len__() > season:
             next = {"season": season + 1, "episode": 0}
         else:
             next = False
@@ -69,8 +75,10 @@ def subs(show, season, episode):
 
     if episode > 0:
         previous = {"season": season, "episode": episode - 1}
-    elif season > 0:
-        previous = {"season": season - 1, "episode": nrk.get_episodes_in_season(season - 1)[-1]}
+    elif 'seasonNumber' in nrk.get_season(0) and season > nrk.get_season(0)['seasonNumber']:
+        previous = {"season": season - 1, "episode": nrk.get_episodes_in_season(season - 1)[-1]['episodeNumber'] - 1}
+    elif season > 1000 and season > int(nrk.get_season(0)['name']):
+        previous = {"season": season - 1, "episode": nrk.get_episodes_in_season(season - 1)[-1]['episodeNumber'] - 1}
     else:
         previous = False
     if previous:
