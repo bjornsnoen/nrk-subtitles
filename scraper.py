@@ -98,7 +98,10 @@ class Show:
         buffer = StringIO(subs)
         lines = []
         for caption in webvtt.read_buffer(buffer):
-            lines.append(caption.text.encode('latin-1').decode())
+            try:
+                lines.append(caption.text)
+            except:
+                pass
         return lines
 
     def get_episode_titles(self, season, episode):
