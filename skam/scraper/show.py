@@ -93,6 +93,7 @@ class Show:
                         )
                     )
                     episodes_data = instalments_in_season
+                    break
 
         if episodes_data:
             episodes_data = list(
@@ -113,14 +114,14 @@ class Show:
         """ Get a single episode by season number and episode number """
         try:
             season = self.get_season(season_number)
-            episode_data = season["episodes"][episode_number]
+            episode = self._episode_data_to_episode(season["episodes"][episode_number])
         except:
             episodes = self.get_episodes_in_season(season_number)
             try:
-                episode_data = reduce(
+                episode = reduce(
                     (
                         lambda episode_x, episode_y: episode_x
-                        if dateparser.parse(episode_x["titles"]["title"]).timestamp()
+                        if dateparser.parse(" ".join([episode_x.title, str(episode_x.production_year)])).timestamp()
                         == episode_number
                         else episode_y
                     ),
@@ -128,9 +129,9 @@ class Show:
                 )
             except:
                 # Last ditch?
-                episode_data = episodes[episode_number]
+                episode = episodes[episode_number]
 
-        return self._episode_data_to_episode(episode_data)
+        return episode
 
     def _episode_data_to_episode(self, episode_data: dict) -> Episode:
         return Episode(
@@ -138,7 +139,7 @@ class Show:
             episode_data["prfId"],
             episode_data["titles"]["title"],
             episode_data["titles"]["subtitle"],
-            episode_data["episodeNumber"],
+            episode_data["episodeNumber"] if "episodeNumber" in episode_data.keys() else None,
             episode_data["productionYear"],
             episode_data["image"][0]["url"],
         )
