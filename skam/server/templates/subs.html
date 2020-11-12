@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-  {{ nav.navbar(up_link=url_for('root', show=show), right_link=next, left_link=previous) }}
+  {{ nav.navbar(up_link=url_for('root', show_name=show), right_link=next, left_link=previous) }}
   {% for line in subs %}
   <p>
     {% autoescape false %}

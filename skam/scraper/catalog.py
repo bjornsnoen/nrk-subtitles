@@ -1,14 +1,14 @@
 """ Module containing nrk catalog classes """
-import json
-from functools import reduce
-from io import StringIO
-from typing import List
+from dataclasses import dataclass
+from typing import Dict, Iterable, List
 
-import dateparser
-import requests
-import webvtt
-from bs4 import BeautifulSoup as bs
-from .show import ShowLink
+
+@dataclass
+class ShowLink:
+    """ Show name and url """
+
+    name: str
+    link: str
 
 
 class Section:
@@ -16,13 +16,13 @@ class Section:
 
     def __init__(self, name: str):
         self.name = name
-        self.show_links = {}
+        self.show_links: Dict[str, ShowLink] = {}
 
     def add(self, show_link: ShowLink):
-        """ Add one show to this section """
+        """ Add one episode to this section """
         self.show_links[show_link.name] = show_link
 
-    def get_shows(self) -> List[ShowLink]:
+    def get_shows(self) -> Iterable[ShowLink]:
         """ Get all shows in section """
         return self.show_links.values()
 
@@ -30,16 +30,16 @@ class Section:
 class Catalog:
     """ Entire catalog of shows """
 
-    def __init__(self, links: List[ShowLink]):
+    def __init__(self, links: Iterable[ShowLink]):
         self.links = links
-        self.sections = {}
+        self.sections: Dict[chr, Section] = {}
 
-    def get_sections(self) -> List[Section]:
+    def get_sections(self) -> Iterable[Section]:
         """ Get all shows in catalog sorted into sections """
         if not self.sections.__len__():
             for link in self.links:
                 first_letter = link.name[0].lower()
-                if not first_letter in self.sections:
+                if first_letter not in self.sections:
                     self.sections[first_letter] = Section(first_letter.upper())
 
                 self.sections[first_letter].add(link)
