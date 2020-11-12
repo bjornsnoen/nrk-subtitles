@@ -18,4 +18,7 @@ RUN sh docker/flask/cleanup.sh
 COPY docker/flask/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/flask/nginx.conf /etc/nginx/sites-enabled/subs.conf
 
+# So we can create cache files from the webapp
+RUN chown -R www-data:www-data /app
+
 CMD [ "/usr/bin/supervisord" ]
