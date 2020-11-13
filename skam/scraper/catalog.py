@@ -1,6 +1,6 @@
 """ Module containing nrk catalog classes """
 from dataclasses import dataclass
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable
 
 
 @dataclass
@@ -32,7 +32,7 @@ class Catalog:
 
     def __init__(self, links: Iterable[ShowLink]):
         self.links = links
-        self.sections: Dict[chr, Section] = {}
+        self.sections: Dict[str, Section] = {}
 
     def get_sections(self) -> Iterable[Section]:
         """ Get all shows in catalog sorted into sections """

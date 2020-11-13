@@ -37,7 +37,7 @@ class SequentialShow(ShowInterface):
                 return season["titles"]["title"]
         return None
 
-    def get_episodes(self, season_number: int) -> List[SequentialEpisode]:
+    def get_episodes(self, season_number: int) -> List[Episode]:
         """ Get every episode in the requested season """
 
         season = None
@@ -48,7 +48,7 @@ class SequentialShow(ShowInterface):
         if season is None:
             return []
 
-        episodes = []
+        episodes: List[Episode] = []
         for episode_data in season["_embedded"]["episodes"]:
             episodes.append(SequentialEpisode(episode_data))
 

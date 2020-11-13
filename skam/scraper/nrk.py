@@ -2,7 +2,7 @@
 import re
 
 import requests
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs  # type: ignore
 
 
 def get_series():

@@ -37,17 +37,20 @@ class StandardShow(ShowInterface):
 
     def get_episodes(self, series_number: str) -> List[Episode]:
         # TODO: Load more episodes if necessary
-        episodes = []
+        episodes: List[Episode] = []
         if series_number not in self.episodes_data_by_season:
             self._load_season_data(series_number)
 
         for episode_data in self.episodes_data_by_season[series_number]:
             if episode_data["_links"]["season"]["name"] == series_number:
                 episodes.append(StandardEpisode(episode_data))
+
         return episodes
 
     def _load_season_data(self, series_number: str, page: int = 1):
         season_config = self._find_season_config(str(series_number))
+        if season_config is None:
+            return
         link = season_config["_links"]["self"]["href"]
         link = link + "?page={page}".format(page=page)
         instalments = load_installments(link)
@@ -72,7 +75,11 @@ class StandardShow(ShowInterface):
         # pylint: disable=unsubscriptable-object
         # ref: https://github.com/PyCQA/pylint/issues/2420
         previous = None
-        episodes = self.get_episodes(self.get_season_number(current_episode))
+        season_number = self.get_season_number(current_episode)
+        if season_number is None:
+            return None
+
+        episodes = self.get_episodes(season_number)
         episodes.reverse()
         for episode in episodes:
             if episode == current_episode:
@@ -82,6 +89,8 @@ class StandardShow(ShowInterface):
         if previous is None:
             # First of season
             season_config = self._get_season_config_by_episode(current_episode)
+            if season_config is None:
+                return None
             preceding_season = self._get_preceding_season(season_config)
             if preceding_season is None:
                 return None
@@ -93,9 +102,13 @@ class StandardShow(ShowInterface):
         return previous
 
     def get_following_episode(self, current_episode: Episode) -> Optional[Episode]:
-        # pylint: disable=unsubscriptable-object
+        season_number = self.get_season_number(current_episode)
+        if season_number is None:
+            return None
+
         following = None
-        for episode in self.get_episodes(self.get_season_number(current_episode)):
+
+        for episode in self.get_episodes(season_number):
             if episode == current_episode:
                 break
             following = episode
@@ -103,6 +116,8 @@ class StandardShow(ShowInterface):
         if following is None:
             # First of season
             season_config = self._get_season_config_by_episode(current_episode)
+            if season_config is None:
+                return None
             following_season = self._get_following_season(season_config)
             if following_season is None:
                 return None
@@ -117,11 +132,17 @@ class StandardShow(ShowInterface):
         return config["titles"]["title"]
 
     def get_season_number(self, episode: Episode) -> Optional[str]:
-        return self._get_season_config_by_episode(episode)["titles"]["title"]
+        config = self._get_season_config_by_episode(episode)
+        if config is None:
+            return None
+        return config["titles"]["title"]
 
     def get_season_title(self, season_number) -> Optional[str]:
         # The one we already have isn't real, it's just the name, but to save requests we'll use it
         season_config = self._get_season_config(season_number)
+        if season_config is None:
+            return None
+
         title = season_config["titles"]["title"]
         if season_config["titles"]["subtitle"] is not None:
             title = "{title} {subtitle}".format(
@@ -149,7 +170,7 @@ class StandardShow(ShowInterface):
             following = season
         return None
 
-    def _get_season_config_by_episode(self, episode: Episode) -> [dict]:
+    def _get_season_config_by_episode(self, episode: Episode) -> Optional[dict]:
         for season_name, episodes_data in self.episodes_data_by_season.items():
             for episode_data in episodes_data:
                 if (

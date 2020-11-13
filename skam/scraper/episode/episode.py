@@ -6,7 +6,7 @@ from io import StringIO
 from typing import List, Union
 
 import requests
-import webvtt
+import webvtt  # type: ignore
 
 
 class Episode(ABC):
@@ -65,7 +65,7 @@ class Episode(ABC):
     def available(self, availability: bool):
         self._available = availability
 
-    def __eq__(self, other: Episode) -> bool:
-        if other is None:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Episode):
             return False
         return self.prf_id == other.prf_id

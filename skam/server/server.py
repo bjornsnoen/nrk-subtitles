@@ -28,14 +28,13 @@ def index():
 @app.route("/show/<string:show_name>/")
 def root(show_name: str):
     """ Home page for series """
-    try:
-        show = get_show(show_name)
-    except Exception as error:
+    show = get_show(show_name)
+    if show is None:
         return error_page()
 
     seasons = []
     for season in show.get_available_seasons():
-        value = {"episodes": []}
+        value: dict = {"episodes": []}
 
         if show.get_season_title(season):
             value["title"] = show.get_season_title(season)
@@ -49,7 +48,6 @@ def root(show_name: str):
             else:
                 number = idx
 
-            episode = show.get_episode(season, number)
             link = url_for(
                 "subs",
                 show_name=show_name,
@@ -80,7 +78,12 @@ def subs(
 ):
     """ Page for displaying subtitles for a given episode """
     show = get_show(show_name)
+    if show is None:
+        return error_page()
+
     episode = show.get_episode(season_number, episode_number)
+    if episode is None:
+        return error_page()
 
     following = show.get_following_episode(episode)
     next_link = (

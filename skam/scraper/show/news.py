@@ -1,11 +1,13 @@
 """ Module for news shows """
 from typing import List, Optional
-from .standard import StandardShow
+
 from ..episode.episode import Episode
+from .standard import StandardShow
 
 
 class NewsShow(StandardShow):
     """ Class for managing episodes of news shows """
+
     def __init__(self, config: dict):
         config["standard"] = config["news"]
         super().__init__(config)
@@ -30,7 +32,10 @@ class NewsShow(StandardShow):
         return None
 
     def _get_season_config_by_episode(self, episode: Episode) -> Optional[dict]:
-        return self._find_season_config(self.get_season_number(episode))
+        season_number = self.get_season_number(episode)
+        if season_number is None:
+            return None
+        return self._find_season_config(season_number)
 
     def _get_season_name_from_config(self, config: dict) -> str:
         url_path = config["_links"]["self"]["href"]
