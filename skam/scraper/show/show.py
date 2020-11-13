@@ -58,6 +58,10 @@ def get_show(name: str) -> Optional[ShowInterface]:
 
         return StandardShow(config)
 
+    if config["seriesType"] == "news":
+        from .news import NewsShow
+
+        return NewsShow(config)
     return None
 
 

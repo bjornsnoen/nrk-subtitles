@@ -86,7 +86,9 @@ class StandardShow(ShowInterface):
             if preceding_season is None:
                 return None
 
-            return self.get_episodes(preceding_season["titles"]["title"])[0]
+            return self.get_episodes(
+                self._get_season_name_from_config(preceding_season)
+            )[0]
 
         return previous
 
@@ -105,9 +107,14 @@ class StandardShow(ShowInterface):
             if following_season is None:
                 return None
 
-            return self.get_episodes(following_season["titles"]["title"])[-1]
+            return self.get_episodes(
+                self._get_season_name_from_config(following_season)
+            )[-1]
 
         return following
+
+    def _get_season_name_from_config(self, config: dict) -> str:
+        return config["titles"]["title"]
 
     def get_season_number(self, episode: Episode) -> Optional[str]:
         return self._get_season_config_by_episode(episode)["titles"]["title"]

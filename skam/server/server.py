@@ -30,7 +30,7 @@ def root(show_name: str):
     """ Home page for series """
     try:
         show = get_show(show_name)
-    except:
+    except Exception as error:
         return error_page()
 
     seasons = []
