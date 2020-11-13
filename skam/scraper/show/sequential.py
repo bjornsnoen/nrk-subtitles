@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 from skam.scraper.episode.sequential import SequentialEpisode
 
 from ..episode.episode import Episode
-from .show import ShowInterface
+from .show import NoSuchEpisode, NoSuchSeason, ShowInterface
 
 
 class SequentialShow(ShowInterface):
@@ -54,11 +54,11 @@ class SequentialShow(ShowInterface):
 
         return episodes
 
-    def get_episode(self, season_number: int, episode_number: int) -> Optional[Episode]:
+    def get_episode(self, season_number: int, episode_number: int) -> Episode:
         for episode in self.get_episodes(int(season_number)):
             if episode.episode_number == int(episode_number):
                 return episode
-        return None
+        raise NoSuchEpisode
 
     def get_preceding_episode(self, current_episode: Episode) -> Optional[Episode]:
         previous = None
@@ -81,12 +81,12 @@ class SequentialShow(ShowInterface):
 
         return None
 
-    def get_season_number(self, episode: Episode) -> Optional[int]:
+    def get_season_number(self, episode: Episode) -> int:
         for season in self.get_available_seasons():
             if self.season_has_episode(season, episode):
                 return season
 
-        return None
+        raise NoSuchSeason
 
     def season_has_episode(self, season_number: int, episode: Episode) -> bool:
         """ Inherit """

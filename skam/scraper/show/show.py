@@ -24,7 +24,7 @@ class ShowInterface:
         """ Get the name of a given season """
         pass
 
-    def get_episode(self, season_number, episode_number) -> Optional[Episode]:
+    def get_episode(self, season_number, episode_number) -> Episode:
         """ Get a singular episode by season and episode number """
         pass
 
@@ -36,12 +36,12 @@ class ShowInterface:
         """ Get the episode immediately following the given episode """
         pass
 
-    def get_season_number(self, episode: Episode) -> Optional[Union[int, str]]:
+    def get_season_number(self, episode: Episode) -> Union[int, str]:
         """ Find the season number for a given episode """
         pass
 
 
-def get_show(name: str) -> Optional[ShowInterface]:
+def get_show(name: str) -> ShowInterface:
     """ Fetch show configuration and instantiate appropriate object """
     # pylint: disable=import-outside-toplevel
     response = requests.get(
@@ -62,10 +62,28 @@ def get_show(name: str) -> Optional[ShowInterface]:
         from .news import NewsShow
 
         return NewsShow(config)
-    return None
+    raise NoSuchShow
 
 
 def load_installments(path: str) -> dict:
     """ Fetch more standard installments given a uri path to nrk """
     response = requests.get("https://psapi.nrk.no{path}".format(path=path))
     return json.loads(response.text)
+
+
+class NoSuchShow(Exception):
+    """ Exception to throw when trying to get nonexistent show """
+
+    pass
+
+
+class NoSuchSeason(Exception):
+    """ Exception to throw when trying to get nonexistent season of show """
+
+    pass
+
+
+class NoSuchEpisode(Exception):
+    """ Exception to throw when trying to get nonexistent episode of show """
+
+    pass

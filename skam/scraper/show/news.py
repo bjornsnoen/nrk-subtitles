@@ -2,6 +2,7 @@
 from typing import List, Optional
 
 from ..episode.episode import Episode
+from .show import NoSuchSeason
 from .standard import StandardShow
 
 
@@ -25,26 +26,24 @@ class NewsShow(StandardShow):
 
         return None
 
-    def _find_season_config(self, season_name: str) -> Optional[dict]:
+    def _find_season_config(self, season_name: str) -> dict:
         for season in self.seasons:
             if self._get_season_name_from_config(season) == season_name:
                 return season
-        return None
+        raise NoSuchSeason
 
-    def _get_season_config_by_episode(self, episode: Episode) -> Optional[dict]:
+    def _get_season_config_by_episode(self, episode: Episode) -> dict:
         season_number = self.get_season_number(episode)
-        if season_number is None:
-            return None
         return self._find_season_config(season_number)
 
     def _get_season_name_from_config(self, config: dict) -> str:
         url_path = config["_links"]["self"]["href"]
         return url_path.split(sep="/")[-1]
 
-    def get_season_number(self, episode: Episode) -> Optional[str]:
+    def get_season_number(self, episode: Episode) -> str:
         for season_name, episodes_data in self.episodes_data_by_season.items():
             for potential in self.get_episodes(season_name):
                 if potential == episode:
                     return season_name
 
-        return None
+        raise NoSuchSeason

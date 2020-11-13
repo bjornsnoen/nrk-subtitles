@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 
 from ..episode.episode import Episode
 from ..episode.standard import StandardEpisode
-from .show import ShowInterface, load_installments
+from .show import NoSuchEpisode, NoSuchSeason, ShowInterface, load_installments
 
 
 class StandardShow(ShowInterface):
@@ -57,17 +57,17 @@ class StandardShow(ShowInterface):
         for episode_data in instalments["_embedded"]["instalments"]:
             self._append_episode_data(episode_data)
 
-    def _find_season_config(self, season_name: str) -> Optional[dict]:
+    def _find_season_config(self, season_name: str) -> dict:
         for season in self.seasons:
             if season["titles"]["title"] == season_name:
                 return season
-        return None
+        raise NoSuchSeason
 
-    def get_episode(self, season_number, episode_number) -> Optional[Episode]:
+    def get_episode(self, season_number, episode_number) -> Episode:
         for episode in self.get_episodes(season_number):
             if episode.episode_number == episode_number:
                 return episode
-        return None
+        raise NoSuchEpisode
 
     def get_preceding_episode(self, current_episode: Episode) -> Optional[Episode]:
         # It's safe to assume that the current_episode will be among the already fetched ones,
@@ -131,10 +131,8 @@ class StandardShow(ShowInterface):
     def _get_season_name_from_config(self, config: dict) -> str:
         return config["titles"]["title"]
 
-    def get_season_number(self, episode: Episode) -> Optional[str]:
+    def get_season_number(self, episode: Episode) -> str:
         config = self._get_season_config_by_episode(episode)
-        if config is None:
-            return None
         return config["titles"]["title"]
 
     def get_season_title(self, season_number) -> Optional[str]:
@@ -170,7 +168,7 @@ class StandardShow(ShowInterface):
             following = season
         return None
 
-    def _get_season_config_by_episode(self, episode: Episode) -> Optional[dict]:
+    def _get_season_config_by_episode(self, episode: Episode) -> dict:
         for season_name, episodes_data in self.episodes_data_by_season.items():
             for episode_data in episodes_data:
                 if (
@@ -178,10 +176,10 @@ class StandardShow(ShowInterface):
                     == episode.episode_number
                 ):
                     return self._get_season_config(season_name)
-        return None
+        raise NoSuchSeason
 
-    def _get_season_config(self, season_number: str) -> Optional[dict]:
+    def _get_season_config(self, season_number: str) -> dict:
         for season_config in self.seasons:
             if season_config["titles"]["title"] == season_number:
                 return season_config
-        return None
+        raise NoSuchSeason
