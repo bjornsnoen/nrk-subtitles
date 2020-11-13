@@ -4,13 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "~=1.1"
 beautifulsoup4 = "~=4.9"
 dateparser = "~=1.0"
 html5lib = "~=1.0"
 webvtt-py = "~=0.4"
 requests = "~=2.23"
 requests-cache = "*"
+fastapi = "*"
+uvicorn = "*"
+gunicorn = "*"
+uvloop = "*"
+httptools = "*"
+pydantic = "*"
 
 [dev-packages]
 black = "*"
