@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 beautifulsoup4 = "~=4.9"
-dateparser = "~=1.0"
 html5lib = "~=1.0"
 webvtt-py = "~=0.4"
 requests = "~=2.23"
@@ -24,6 +23,7 @@ isort = "*"
 rope = "*"
 pytest = "*"
 mypy = "*"
+skam = {editable = true, path = "."}
 
 [requires]
 python_version = "3.8"
