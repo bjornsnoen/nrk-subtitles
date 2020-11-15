@@ -1,4 +1,5 @@
 FROM python:3.8-slim-buster
+ARG supervisorconf=supervisord.conf
 
 # Must be built from project root
 
@@ -15,8 +16,9 @@ COPY docker/fastapi /app/docker/fastapi
 
 RUN sh docker/fastapi/cleanup.sh
 
-COPY docker/fastapi/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/fastapi/nginx.conf /etc/nginx/sites-enabled/subs.conf
+COPY docker/fastapi/${supervisorconf} /etc/supervisor/conf.d/supervisord.conf
+COPY docker/fastapi/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/fastapi/nginx/application.conf /etc/nginx/sites-enabled/application.conf
 
 # So we can create cache files from the webapp
 RUN chown -R www-data:www-data /app

@@ -5,3 +5,4 @@ subs.code-workspace
 .venv/
 skam.egg-info/
 *.sqlite
+build/

@@ -15,6 +15,7 @@ gunicorn = "*"
 uvloop = "*"
 httptools = "*"
 pydantic = "*"
+debugpy = "*"
 
 [dev-packages]
 black = "*"
