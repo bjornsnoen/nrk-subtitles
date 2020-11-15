@@ -1,4 +1,4 @@
-from python:3.8-slim-buster
+FROM python:3.8-slim-buster
 
 # Must be built from project root
 
