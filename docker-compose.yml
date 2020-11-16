@@ -6,13 +6,9 @@ services:
       context: "./"
       dockerfile: "./docker/fastapi/Dockerfile"
       args:
-        supervisorconf: "supervisord.debug.conf"
+        image_type: "debug"
     ports:
       - "80:80"
       - "5678:5678"
     volumes:
       - "./skam:/app/skam:cached"
-    environment:
-      - "DEBUG=1"
-      - "DEBUG_LISTEN_HOST=0.0.0.0"
-      - "DEBUG_LISTEN_PORT=5678"
