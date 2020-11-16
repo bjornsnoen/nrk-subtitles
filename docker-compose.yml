@@ -12,3 +12,4 @@ services:
       - "5678:5678"
     volumes:
       - "./skam:/app/skam:cached"
+      - "./frontend:/app/frontend"
