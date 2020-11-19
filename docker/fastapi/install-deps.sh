@@ -1,9 +1,10 @@
 set -e
 apt-get update -y
-apt-get install gcc supervisor sqlite3 libnginx-mod-http-lua nginx -y
-pip install pipenv
-PIPENV_VENV_IN_PROJECT=1 pipenv install
-apt-get remove gcc -y
-apt-get autoremove -y
+apt-get install gcc supervisor sqlite3 libnginx-mod-http-lua nginx curl -y
+curl -sL https://deb.nodesource.com/setup_14.x | bash -
+apt-get install -y nodejs
 
-mkdir -p /var/cache/nginx/subs
+pip install pipenv
+npm install -g yarn
+
+apt-get autoremove -y
