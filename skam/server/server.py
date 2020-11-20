@@ -1,5 +1,6 @@
 """ Nrk subs fastapi app """
 
+from os import environ
 from typing import Union
 
 from fastapi import FastAPI
@@ -14,7 +15,7 @@ from .responses.show import (
     show_model_from_show,
 )
 
-app = FastAPI()
+app = FastAPI(root_path=environ["API_ROOT_PATH"] if "API_ROOT_PATH" in environ else "")
 
 
 @app.get("/shows", response_model=ShowListModel)

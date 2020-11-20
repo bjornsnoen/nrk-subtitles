@@ -39,6 +39,7 @@ COPY --chown=www-data:www-data frontend/tsconfig.json /app/frontend/
 
 
 COPY docker/fastapi/nginx/nginx.conf /etc/nginx/nginx.conf
+ENV API_ROOT_PATH="/api"
 COPY docker/fastapi/nginx/application.conf /etc/nginx/sites-enabled/application.conf
 
 USER root
