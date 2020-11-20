@@ -23,7 +23,7 @@ class SubtitlesModel(BaseModel):
     episode: EpisodeModel
     previous_episode: Optional[EpisodeModel]
     next_episode: Optional[EpisodeModel]
-    subs: List[str]
+    subs: Optional[List[str]]
 
 
 def episode_model_from_episode(episode: Episode) -> EpisodeModel:

@@ -1,11 +1,12 @@
 """ Nrk subs fastapi app """
 
 from os import environ
-from typing import Union
+from typing import List, Optional, Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from requests.exceptions import InvalidURL
 
-from skam.scraper.show.show import get_show
+from skam.scraper.show.show import NoSuchEpisode, NoSuchSeason, NoSuchShow, get_show
 
 from .responses.episode import SubtitlesModel, episode_model_from_episode
 from .responses.show import (
@@ -27,7 +28,10 @@ async def shows():
 @app.get("/show/{show_name}", response_model=ShowModel)
 async def show(show_name: str):
     """ Fetch show info by show slug """
-    show = get_show(show_name)
+    try:
+        show = get_show(show_name)
+    except NoSuchShow:
+        raise HTTPException(status_code=404)
     return show_model_from_show(show)
 
 
@@ -39,8 +43,18 @@ async def subs(
     show_name: str, season_name: Union[str, int], episode_number: Union[str, int]
 ):
     """ Fetch subs for specific episode """
-    show = get_show(show_name)
-    current_episode = show.get_episode(season_name, episode_number)
+    try:
+        show = get_show(show_name)
+        current_episode = show.get_episode(season_name, episode_number)
+        subs: Optional[List[str]] = current_episode.get_subs()
+    except NoSuchShow:
+        raise HTTPException(status_code=404, detail="No such show")
+    except NoSuchSeason:
+        raise HTTPException(status_code=404, detail="No such season")
+    except NoSuchEpisode:
+        raise HTTPException(status_code=404, detail="No such episode")
+    except InvalidURL:
+        subs = None
     next_episode = show.get_following_episode(current_episode)
     previous_episode = show.get_preceding_episode(current_episode)
 
@@ -50,5 +64,5 @@ async def subs(
         previous_episode=episode_model_from_episode(previous_episode)
         if previous_episode
         else None,
-        subs=current_episode.get_subs(),
+        subs=subs,
     )

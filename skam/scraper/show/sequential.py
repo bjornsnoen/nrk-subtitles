@@ -40,6 +40,9 @@ class SequentialShow(ShowInterface):
     def get_episodes(self, season_number: int) -> List[Episode]:
         """ Get every episode in the requested season """
 
+        if season_number not in self.get_available_seasons():
+            raise NoSuchSeason
+
         season = None
         for season in self.seasons:
             if season["sequenceNumber"] == season_number:

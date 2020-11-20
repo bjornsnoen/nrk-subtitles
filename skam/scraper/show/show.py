@@ -47,6 +47,8 @@ def get_show(name: str) -> ShowInterface:
     response = requests.get(
         "https://psapi.nrk.no/tv/catalog/series/{name}".format(name=name)
     )
+    if response.status_code == 404:
+        raise NoSuchShow
     config = json.loads(response.text)
     if config["seriesType"] == "sequential":
         from .sequential import SequentialShow
