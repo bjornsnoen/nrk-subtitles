@@ -37,6 +37,9 @@ COPY --chown=www-data:www-data frontend/src /app/frontend/src
 COPY --chown=www-data:www-data frontend/public/ /app/frontend/public
 COPY --chown=www-data:www-data frontend/tsconfig.json /app/frontend/
 
+WORKDIR /app/frontend
+RUN npm run-script build
+WORKDIR /app
 
 COPY docker/fastapi/nginx/nginx.conf /etc/nginx/nginx.conf
 ENV API_ROOT_PATH="/api"
