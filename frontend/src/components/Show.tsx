@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 interface Dictionary<T> {
     [key: string]: T;
@@ -19,19 +19,21 @@ interface IShow {
     episodes_by_season: Dictionary<IEpisode[]>
 }
 
-const Episode = (props: IEpisode) => {
+const Episode = (props: {episodeData: IEpisode, season: string, show: string}) => {
     return (
-        <div>
-            <h3>{props.episode}</h3>
-            <h5>{props.subtitle}</h5>
-            <img src={props.image_url || ""} alt="Episode thumbnail" />
-        </div>
+        <Link to={`/show/${props.show}/season/${props.season}/episode/${props.episodeData.number}`}>
+            <h3>{props.episodeData.episode}</h3>
+            <h5>{props.episodeData.subtitle}</h5>
+            <img src={props.episodeData.image_url || ""} alt="Episode thumbnail" />
+        </Link>
     )
 }
 
-const Season = (props: {episodes: IEpisode[], title: string}) => {
+const Season = (props: {episodes: IEpisode[], title: string, name: string, show: string}) => {
     const episodeNodes = props.episodes.map(
-        (episodeData) => <Episode {...episodeData} />
+        (episodeData) => (
+            <Episode episodeData={episodeData} show={props.show} season={props.name} />
+        )
     );
     return (
         <div>
@@ -61,8 +63,10 @@ const Show = () => {
     let seasons: JSX.Element[] = [];
     for (let [seasonName, episodes] of Object.entries(show.episodes_by_season)) {
         seasons.push(<Season
-             title={show.season_titles_by_season[seasonName]}
-             episodes={episodes} />
+            show={showSlug}
+            name={seasonName}
+            title={show.season_titles_by_season[seasonName]}
+            episodes={episodes} />
         );
     }
 
