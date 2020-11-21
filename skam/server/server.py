@@ -8,7 +8,7 @@ from requests.exceptions import InvalidURL
 
 from skam.scraper.show.show import NoSuchEpisode, NoSuchSeason, NoSuchShow, get_show
 
-from .responses.episode import SubtitlesModel, episode_model_from_episode
+from .responses.episode import EpisodeModel, SubtitlesModel, episode_model_from_episode
 from .responses.show import (
     ShowListModel,
     ShowModel,
@@ -58,11 +58,23 @@ async def subs(
     next_episode = show.get_following_episode(current_episode)
     previous_episode = show.get_preceding_episode(current_episode)
 
+    if next_episode is not None:
+        next_model: Optional[EpisodeModel] = episode_model_from_episode(
+            next_episode, show.get_season_number(next_episode)
+        )
+    else:
+        next_model = None
+
+    if previous_episode is not None:
+        previous_model: Optional[EpisodeModel] = episode_model_from_episode(
+            previous_episode, show.get_season_number(previous_episode)
+        )
+    else:
+        previous_model = None
+
     return SubtitlesModel(
-        episode=episode_model_from_episode(current_episode),
-        next_episode=episode_model_from_episode(next_episode) if next_episode else None,
-        previous_episode=episode_model_from_episode(previous_episode)
-        if previous_episode
-        else None,
+        episode=episode_model_from_episode(current_episode, season_name),
+        next_episode=next_model,
+        previous_episode=previous_model if previous_episode else None,
         subs=subs,
     )

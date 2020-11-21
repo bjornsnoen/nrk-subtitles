@@ -5,3 +5,7 @@
 .subtitles-single {
   margin: 1em;
 }
+
+.hidden {
+  display: none;
+}

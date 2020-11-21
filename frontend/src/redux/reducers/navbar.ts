@@ -1,6 +1,6 @@
 import { INavState, INavAction, ButtonType } from '../actions/navbar';
 
-const setButonTarget = (
+const setButtonTarget = (
   state: INavState = { back: null, forward: null, up: null },
   action: INavAction,
 ) => {
@@ -22,4 +22,4 @@ const setButonTarget = (
   return { back, forward, up };
 };
 
-export default setButonTarget;
+export default setButtonTarget;

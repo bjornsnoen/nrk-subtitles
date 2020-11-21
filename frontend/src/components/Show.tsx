@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { IEpisode } from './Episode';
+import { clearNavbar } from '../redux/actions/navbar';
 
 interface Dictionary<T> {
   [key: string]: T;
 }
 
-interface IEpisode {
-  episode: string,
-  number: string | number,
-  subtitle: string | null,
-  image_url: string | null,
-  available: boolean
-}
-
-interface IShow {
+export interface IShow {
   title: string,
   season_titles_by_season: Dictionary<string>,
   episodes_by_season: Dictionary<IEpisode[]>
@@ -50,6 +44,7 @@ const Season = (props: { episodes: IEpisode[], title: string, name: string, show
 
 const Show = () => {
   const { showSlug } = useParams<{ showSlug: string }>();
+  clearNavbar();
 
   const [show, setShow] = useState<IShow>({
     title: 'loading',

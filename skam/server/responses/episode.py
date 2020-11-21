@@ -12,6 +12,7 @@ class EpisodeModel(BaseModel):
 
     episode: str
     number: Union[str, int]
+    season: Union[str, int]
     subtitle: Optional[str] = None
     image_url: Optional[str] = None
     available: bool = False
@@ -26,7 +27,9 @@ class SubtitlesModel(BaseModel):
     subs: Optional[List[str]]
 
 
-def episode_model_from_episode(episode: Episode) -> EpisodeModel:
+def episode_model_from_episode(
+    episode: Episode, season: Union[str, int]
+) -> EpisodeModel:
     """ Function to create pydantic episode model from normal episode instance """
     return EpisodeModel(
         episode=episode.title,
@@ -34,4 +37,5 @@ def episode_model_from_episode(episode: Episode) -> EpisodeModel:
         subtitle=episode.subtitle,
         image_url=episode.image_url,
         available=episode.available,
+        season=season,
     )

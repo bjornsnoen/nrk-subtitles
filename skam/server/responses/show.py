@@ -43,7 +43,9 @@ def show_model_from_show(show: ShowInterface) -> ShowModel:
         for episode in show.get_episodes(season):
             if season not in episodes_by_season:
                 episodes_by_season[season] = []
-            episodes_by_season[season].append(episode_model_from_episode(episode))
+            episodes_by_season[season].append(
+                episode_model_from_episode(episode, season)
+            )
 
     return ShowModel(
         season_titles_by_season=season_titles_by_season,
