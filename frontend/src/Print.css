@@ -1,0 +1,5 @@
+@media print {
+    .appnav {
+        display: none;
+    }
+}

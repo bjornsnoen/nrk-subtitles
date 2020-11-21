@@ -4,6 +4,7 @@ import ShowList from './components/ShowList';
 import Show from './components/Show';
 import Episode from './components/Episode';
 import './App.css';
+import './Print.css';
 import Navbar from './components/Navbar';
 
 function App() {

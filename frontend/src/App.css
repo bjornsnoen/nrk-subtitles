@@ -1,3 +1,7 @@
+.subtitles {
+  padding-bottom: 4em;
+}
+
 .subtitles-single p {
   margin: 0;
 }
@@ -18,7 +22,7 @@ a, a:visited {
   padding: 1em;
   background-color: khaki;
   margin-bottom: 10px;
-  border-radius: 2mm;
+  border-radius: 5px;
   box-shadow: 4px 4px gray;
 }
 
@@ -45,6 +49,16 @@ body {
 
 .appnav a {
   padding: 1em;
+}
+
+.appnav {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  border-radius: 10px;
+  background-color: honeydew;
+  display: flex;
+  box-shadow: 4px 4px gray;
 }
 
 @media only screen and (min-width: 768px) {
