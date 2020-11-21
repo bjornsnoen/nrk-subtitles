@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import ShowList from "./components/ShowList";
-import Show from "./components/Show";
-import Episode from "./components/Episode";
+import ShowList from './components/ShowList';
+import Show from './components/Show';
+import Episode from './components/Episode';
 import './App.css';
 import Navbar from './components/Navbar';
 
