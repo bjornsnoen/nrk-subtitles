@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { IEpisode } from './Episode';
-import { clearNavbar } from '../redux/actions/navbar';
+import { ClearNavbar } from '../redux/actions/navbar';
 
 interface Dictionary<T> {
   [key: string]: T;
@@ -48,7 +48,7 @@ const Season = (props: { episodes: IEpisode[], title: string, name: string, show
 
 const Show = () => {
   const { showSlug } = useParams<{ showSlug: string }>();
-  clearNavbar();
+  ClearNavbar();
 
   const [show, setShow] = useState<IShow>({
     title: 'loading',

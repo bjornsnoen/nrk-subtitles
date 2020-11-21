@@ -18,7 +18,7 @@ export interface INavAction {
   payload: string;
 }
 
-export const clearNavbar = () => {
+export const ClearNavbar = () => {
   const dispatch = useDispatch();
 
   dispatch({

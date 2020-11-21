@@ -29,7 +29,7 @@ RUN chown -R www-data:www-data /app /var/www /app
 
 USER www-data
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install
-RUN cd frontend && yarn install
+RUN cd frontend && yarn install --dev
 
 COPY --chown=www-data:www-data skam /app/skam
 COPY --chown=www-data:www-data docker/fastapi /app/docker/fastapi
@@ -38,7 +38,7 @@ COPY --chown=www-data:www-data frontend/public/ /app/frontend/public
 COPY --chown=www-data:www-data frontend/tsconfig.json /app/frontend/
 
 WORKDIR /app/frontend
-RUN npm run-script build
+RUN yarn build
 WORKDIR /app
 
 COPY docker/fastapi/nginx/nginx.conf /etc/nginx/nginx.conf

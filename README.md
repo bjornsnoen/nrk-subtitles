@@ -8,12 +8,13 @@ and/or after the episode! That's what this is, a simple app for grabbing the onl
 from NRK and making them easily browsable and, importantly, printable.
 
 ## How?
-Scraping, mostly.
+Nowadays we're using NRK's API for everything except finding out what shows they have, for
+that part we're just scraping tv.nrk.no with requests and beautifulsoup.
 
 ## Installation
-If you just want to run it, use docker to run the flask app.
+If you just want to run it, use docker to run the full stack.
 ```bash
-$ docker build . -t brbcoffee/subs -f docker/flask/Dockerfile
+$ docker build . -t brbcoffee/subs -f docker/fastapi/Dockerfile
 $ docker run --rm -p 8080:6000 brbcoffee/subs
 ```
 Then point your browser to [http://localhost:8080](http://localhost:8080)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { clearNavbar } from '../redux/actions/navbar';
+import { ClearNavbar } from '../redux/actions/navbar';
 
 interface IShowListItem { title: string, slug: string }
 
@@ -30,7 +30,7 @@ const Section = (props: ISection) => {
 };
 
 const ShowList = () => {
-  clearNavbar();
+  ClearNavbar();
   const [shows, setShows] = useState<IShowListItem[]>([]);
   const sections: Dictionary<ISection> = {};
 
