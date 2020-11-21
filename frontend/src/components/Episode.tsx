@@ -34,6 +34,7 @@ const episodeUrl = (episode: IEpisode, season: string | number, show: string) =>
 const Episode = () => {
   const { show, season, episode } = useParams<{ show: string, season: string, episode: string }>();
   const [subs, setSubs] = useState<string[]>([]);
+  const [episodeModel, setEpisodeModel] = useState<IEpisode | null>();
   const subsNodes = subs.map((text: string) => <Sub text={text} />);
   const dispatch = useDispatch();
 
@@ -41,8 +42,15 @@ const Episode = () => {
     fetch(`/api/show/${show}/season/${season}/episode/${episode}`)
       .then((data) => data.json())
       .then((data: ISubsResponse) => {
-        const { subs: subtitles, previous_episode: previous, next_episode: next } = data;
+        const {
+          episode: currentEpisode,
+          subs: subtitles,
+          previous_episode: previous,
+          next_episode: next,
+        } = data;
         setSubs(subtitles);
+        setEpisodeModel(currentEpisode);
+
         dispatch({
           type: 'navbar',
           buttonName: ButtonType.BACK,
@@ -64,6 +72,7 @@ const Episode = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   return (
     <div className="subtitles">
+      <h3>{episodeModel?.episode}</h3>
       {subsNodes}
     </div>
   );
