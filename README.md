@@ -15,7 +15,7 @@ that part we're just scraping tv.nrk.no with requests and beautifulsoup.
 If you just want to run it, use docker to run the full stack.
 ```bash
 $ docker build . -t brbcoffee/subs -f docker/fastapi/Dockerfile
-$ docker run --rm -p 8080:6000 brbcoffee/subs
+$ docker run --rm -p 8080:80 brbcoffee/subs
 ```
 Then point your browser to [http://localhost:8080](http://localhost:8080)
 
