@@ -73,6 +73,17 @@ body {
 }
 
 @media only screen and (min-width: 768px) {
+  .appnav {
+    top: 1em;
+    left: 1em;
+    right: unset;
+    bottom: unset;
+  }
+
+  .subtitles {
+    margin-top: 4em;
+  }
+
   .season {
     display: flex;
     flex-direction: column;
