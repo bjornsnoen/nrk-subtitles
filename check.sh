@@ -1,16 +1,16 @@
 #!/usr/bin/env sh
 
 set -eux
-black --check skam &
+black --check subtitles &
 blackpid=$!
 
-isort --check --profile black skam &
+isort --check --profile black subtitles &
 isortpid=$!
 
-pylint skam &
+pylint subtitles &
 pylintpid=$!
 
-mypy skam &
+mypy subtitles &
 mypypid=$!
 
 pytest &

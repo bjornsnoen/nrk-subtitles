@@ -31,7 +31,7 @@ USER www-data
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install
 RUN cd frontend && yarn install --dev
 
-COPY --chown=www-data:www-data skam /app/skam
+COPY --chown=www-data:www-data subtitles /app/subtitles
 COPY --chown=www-data:www-data docker/fastapi /app/docker/fastapi
 COPY --chown=www-data:www-data frontend/src /app/frontend/src
 COPY --chown=www-data:www-data frontend/public/ /app/frontend/public

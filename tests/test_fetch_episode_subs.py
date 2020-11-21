@@ -1,4 +1,4 @@
-from skam.scraper.episode.sequential import SequentialEpisode
+from subtitles.scraper.episode.sequential import SequentialEpisode
 
 def test_can_fetch_subs():
     conf = {

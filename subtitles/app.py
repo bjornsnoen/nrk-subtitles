@@ -4,7 +4,7 @@ from os import getenv
 
 import uvicorn  # type: ignore
 
-from skam.server.server import app
+from subtitles.server.server import app
 
 if getenv("DEBUG") == "1":
     import debugpy  # type: ignore

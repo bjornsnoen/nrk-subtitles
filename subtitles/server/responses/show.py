@@ -4,9 +4,9 @@ from typing import Dict, List, Optional
 # pylint: disable=no-name-in-module
 from pydantic import BaseModel
 
-from skam.scraper.nrk import get_series
-from skam.scraper.show.show import ShowInterface
-from skam.server.responses.episode import EpisodeModel, episode_model_from_episode
+from subtitles.scraper.nrk import get_series
+from subtitles.scraper.show.show import ShowInterface
+from subtitles.server.responses.episode import EpisodeModel, episode_model_from_episode
 
 
 class ShowModel(BaseModel):

@@ -3,6 +3,6 @@ __pycache__/
 env/
 subs.code-workspace
 .venv/
-skam.egg-info/
+subtitles.egg-info/
 *.sqlite
 build/

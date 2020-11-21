@@ -6,7 +6,12 @@ from typing import List, Optional, Union
 from fastapi import FastAPI, HTTPException
 from requests.exceptions import InvalidURL
 
-from skam.scraper.show.show import NoSuchEpisode, NoSuchSeason, NoSuchShow, get_show
+from subtitles.scraper.show.show import (
+    NoSuchEpisode,
+    NoSuchSeason,
+    NoSuchShow,
+    get_show,
+)
 
 from .responses.episode import EpisodeModel, SubtitlesModel, episode_model_from_episode
 from .responses.show import (

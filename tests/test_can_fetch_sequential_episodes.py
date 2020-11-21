@@ -1,4 +1,4 @@
-from skam.scraper.show.show import get_show
+from subtitles.scraper.show.show import get_show
 
 SHOW_NAME = "skam"
 

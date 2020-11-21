@@ -5,7 +5,7 @@ with open("README.md") as fh:
     long_description = fh.read()
 
 setup(
-    name="skam",
+    name="subtitles",
     packages=find_packages(),
     description="Webapp to make NRK subs accessible and browsable",
     license="GPLv3",

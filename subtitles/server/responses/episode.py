@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 # pylint: disable=no-name-in-module
 from pydantic import BaseModel
 
-from skam.scraper.episode.episode import Episode
+from subtitles.scraper.episode.episode import Episode
 
 
 class EpisodeModel(BaseModel):

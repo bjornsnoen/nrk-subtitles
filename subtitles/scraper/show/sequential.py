@@ -4,7 +4,7 @@ from __future__ import annotations
 from functools import reduce
 from typing import Dict, List, Optional
 
-from skam.scraper.episode.sequential import SequentialEpisode
+from subtitles.scraper.episode.sequential import SequentialEpisode
 
 from ..episode.episode import Episode
 from .show import NoSuchEpisode, NoSuchSeason, ShowInterface
