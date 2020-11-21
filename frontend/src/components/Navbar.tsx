@@ -13,7 +13,7 @@ const Navbar = () => {
   const { back, forward, up } = useSelector(selectNavState);
 
   return (
-    <nav>
+    <nav className="appnav">
       <Link to="/">
         <HomeIcon />
       </Link>

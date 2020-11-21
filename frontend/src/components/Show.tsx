@@ -16,11 +16,13 @@ export interface IShow {
 const Episode = (props: { episodeData: IEpisode, season: string, show: string }) => {
   const { show, season, episodeData } = props;
   return (
-    <Link to={`/show/${show}/season/${season}/episode/${episodeData.number}`}>
-      <h3>{episodeData.episode}</h3>
-      <h5>{episodeData.subtitle}</h5>
-      <img src={episodeData.image_url || ''} alt="Episode thumbnail" />
-    </Link>
+    <div className="episode-card">
+      <Link to={`/show/${show}/season/${season}/episode/${episodeData.number}`}>
+        <h3>{episodeData.episode}</h3>
+        <h5>{episodeData.subtitle}</h5>
+        <img src={episodeData.image_url || ''} alt="Episode thumbnail" />
+      </Link>
+    </div>
   );
 };
 
@@ -35,9 +37,11 @@ const Season = (props: { episodes: IEpisode[], title: string, name: string, show
     ),
   );
   return (
-    <div>
+    <div className="season">
       <h3>{title}</h3>
-      {episodeNodes}
+      <div className="episode-list">
+        {episodeNodes}
+      </div>
     </div>
   );
 };
