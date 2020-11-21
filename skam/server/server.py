@@ -1,124 +1,80 @@
-""" Nrk subs app flask app """
-from typing import Union
+""" Nrk subs fastapi app """
 
-from flask import Flask, render_template, url_for
+from os import environ
+from typing import List, Optional, Union
 
-from ..scraper.catalog import Catalog, ShowLink
-from ..scraper.nrk import get_series
-from ..scraper.show.show import get_show
+from fastapi import FastAPI, HTTPException
+from requests.exceptions import InvalidURL
 
-app = Flask(__name__)
+from skam.scraper.show.show import NoSuchEpisode, NoSuchSeason, NoSuchShow, get_show
 
+from .responses.episode import EpisodeModel, SubtitlesModel, episode_model_from_episode
+from .responses.show import (
+    ShowListModel,
+    ShowModel,
+    get_show_list,
+    show_model_from_show,
+)
 
-@app.route("/")
-def index():
-    """ Home page for flask app """
-    links = []
-    for series in get_series():
-        if not series:
-            continue
-        link = url_for("root", show_name=series)
-        name = series.title().replace("-", " ")
-        links.append(ShowLink(name, link))
-    catalog = Catalog(links)
-
-    return render_template("index.html", catalog=catalog)
+app = FastAPI(root_path=environ["API_ROOT_PATH"] if "API_ROOT_PATH" in environ else "")
 
 
-@app.route("/show/<string:show_name>/")
-def root(show_name: str):
-    """ Home page for series """
-    show = get_show(show_name)
-    if show is None:
-        return error_page()
-
-    seasons = []
-    for season in show.get_available_seasons():
-        value: dict = {"episodes": []}
-
-        if show.get_season_title(season):
-            value["title"] = show.get_season_title(season)
-
-        episodes = show.get_episodes(season)
-        episodes = list(filter(lambda episode: episode.available, episodes))
-
-        for idx, episode in enumerate(episodes, start=1):
-            if episode.episode_number:
-                number = episode.episode_number
-            else:
-                number = idx
-
-            link = url_for(
-                "subs",
-                show_name=show_name,
-                season_number=season,
-                episode_number=number,
-            )
-
-            value["episodes"].append(
-                {
-                    "title": episode.title,
-                    "subtitle": episode.subtitle,
-                    "link": link,
-                    "image": episode.image_url,
-                }
-            )
-
-        seasons.append(value)
-    return render_template(
-        "show-episodes.html",
-        seasons=seasons,
-        title=show.name,
-    )
+@app.get("/shows", response_model=ShowListModel)
+async def shows():
+    """ Fetch list of shows """
+    return get_show_list()
 
 
-@app.route("/show/<string:show_name>/season/<season_number>/episode/<episode_number>/")
-def subs(
-    show_name: str, season_number: Union[str, int], episode_number: Union[int, str]
+@app.get("/show/{show_name}", response_model=ShowModel)
+async def show(show_name: str):
+    """ Fetch show info by show slug """
+    try:
+        show = get_show(show_name)
+    except NoSuchShow:
+        raise HTTPException(status_code=404)
+    return show_model_from_show(show)
+
+
+@app.get(
+    "/show/{show_name}/season/{season_name}/episode/{episode_number}",
+    response_model=SubtitlesModel,
+)
+async def subs(
+    show_name: str, season_name: Union[str, int], episode_number: Union[str, int]
 ):
-    """ Page for displaying subtitles for a given episode """
-    show = get_show(show_name)
-    if show is None:
-        return error_page()
+    """ Fetch subs for specific episode """
+    try:
+        show = get_show(show_name)
+        current_episode = show.get_episode(season_name, episode_number)
+        subs: Optional[List[str]] = current_episode.get_subs()
+    except NoSuchShow:
+        raise HTTPException(status_code=404, detail="No such show")
+    except NoSuchSeason:
+        raise HTTPException(status_code=404, detail="No such season")
+    except NoSuchEpisode:
+        raise HTTPException(status_code=404, detail="No such episode")
+    except InvalidURL:
+        subs = None
+    next_episode = show.get_following_episode(current_episode)
+    previous_episode = show.get_preceding_episode(current_episode)
 
-    episode = show.get_episode(season_number, episode_number)
-    if episode is None:
-        return error_page()
-
-    following = show.get_following_episode(episode)
-    next_link = (
-        url_for(
-            "subs",
-            show_name=show_name,
-            season_number=show.get_season_number(following),
-            episode_number=following.episode_number,
+    if next_episode is not None:
+        next_model: Optional[EpisodeModel] = episode_model_from_episode(
+            next_episode, show.get_season_number(next_episode)
         )
-        if following is not None and following.available
-        else False
-    )
+    else:
+        next_model = None
 
-    preceding = show.get_preceding_episode(episode)
-    previous_link = (
-        url_for(
-            "subs",
-            show_name=show_name,
-            season_number=show.get_season_number(preceding),
-            episode_number=preceding.episode_number,
+    if previous_episode is not None:
+        previous_model: Optional[EpisodeModel] = episode_model_from_episode(
+            previous_episode, show.get_season_number(previous_episode)
         )
-        if preceding is not None and preceding.available
-        else False
+    else:
+        previous_model = None
+
+    return SubtitlesModel(
+        episode=episode_model_from_episode(current_episode, season_name),
+        next_episode=next_model,
+        previous_episode=previous_model if previous_episode else None,
+        subs=subs,
     )
-
-    return render_template(
-        "subs.html",
-        subs=episode.get_subs(),
-        next=next_link,
-        show=show_name,
-        previous=previous_link,
-    )
-
-
-def error_page():
-    """ Common error page function """
-
-    return render_template("404.html")

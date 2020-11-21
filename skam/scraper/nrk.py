@@ -1,16 +1,17 @@
 """ Fetcher for all online series from nrk.no """
 import re
+from typing import List
 
 import requests
 from bs4 import BeautifulSoup as bs  # type: ignore
 
 
-def get_series():
+def get_series() -> List[str]:
     """ Get all series we can find on NRK """
     url = "https://tv.nrk.no"
     response = requests.get(url)
     soup = bs(response.text, "html.parser")
-    series = []
+    series: List[str] = []
     for hyperlink in soup.findAll("a"):
         if hyperlink["href"].find("/serie/") == 0:
             serie = hyperlink["href"].replace("/serie", "")

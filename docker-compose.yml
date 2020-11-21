@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: "./"
+      dockerfile: "./docker/fastapi/Dockerfile"
+      args:
+        image_type: "debug"
+    image: "brbcoffee/subs"
+    ports:
+      - "80:80"
+      - "5678:5678"
+      - "3000:3000"
+    volumes:
+      - "./skam:/app/skam:cached"
+      - "./frontend:/app/frontend"

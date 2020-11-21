@@ -1,3 +1,5 @@
 .venv/
 .vscode/
 .pytest_cache/
+frontend/node_modules/
+frontend/build/

@@ -63,7 +63,7 @@ class StandardShow(ShowInterface):
                 return season
         raise NoSuchSeason
 
-    def get_episode(self, season_number, episode_number) -> Episode:
+    def get_episode(self, season_number: str, episode_number: str) -> Episode:
         for episode in self.get_episodes(season_number):
             if episode.episode_number == episode_number:
                 return episode

@@ -1,0 +1,71 @@
+.subtitles-single p {
+  margin: 0;
+}
+
+.subtitles-single {
+  margin: 1em;
+}
+
+.hidden {
+  display: none;
+}
+
+a, a:visited {
+  color: inherit;
+}
+
+.episode-card {
+  padding: 1em;
+  background-color: khaki;
+  margin-bottom: 10px;
+  border-radius: 2mm;
+  box-shadow: 4px 4px gray;
+}
+
+.episode-card a {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+.episode-card a h3 {
+  margin: 0;
+}
+
+.episode-card a img {
+  max-width: 300px;
+  width: 100%;
+  margin: auto;
+}
+
+body {
+  max-width: 100vw;
+  padding: 1em;
+}
+
+.appnav a {
+  padding: 1em;
+}
+
+@media only screen and (min-width: 768px) {
+  .season {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+    padding: 1em;
+    overflow: hidden;
+  }
+
+  .episode-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .episode-card {
+    max-width: 25em;
+    min-width: 300px;
+    padding: 1em;
+    margin-right: 10px;
+  }
+}
