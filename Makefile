@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := run
 
-.PHONY: docker-images run
+.PHONY: prod push run down
 
 registry = registry.digitalocean.com
 
@@ -12,3 +12,6 @@ push: prod
 
 run: prod
 	docker-compose up -d
+
+down:
+	docker-compose down
